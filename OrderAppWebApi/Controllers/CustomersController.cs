@@ -10,29 +10,29 @@ using OrderAppWebApi.Models;
 
 namespace OrderAppWebApi.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
+    [Route("api/[controller]")]//attribute
+    [ApiController] //indicator that our controller will read JSON data
     public class CustomersController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly AppDbContext _context; //Dbcontext instance
 
-        public CustomersController(AppDbContext context)
+        public CustomersController(AppDbContext context)//instance DbContext with one parameter passed to controller
         {
             _context = context;
         }
 
         // GET: api/Customers
-        [HttpGet]
+        [HttpGet]//Get All --must add data to url http:....../api/customers
         public async Task<ActionResult<IEnumerable<Customer>>> GetCustomer()
         {
             return await _context.Customer.ToListAsync();
         }
-
-        // GET: api/Customers/5
-        [HttpGet("{id}")]
+        //Get by Pk
+        // GET: api/Customers/5 
+        [HttpGet("{id}")]//--must add data to url http:..../5 (calling get by PK)
         public async Task<ActionResult<Customer>> GetCustomer(int id)
         {
-            var customer = await _context.Customer.FindAsync(id);
+            var customer = await _context.Customer.FindAsync(id); //reads customer by PK
 
             if (customer == null)
             {
@@ -45,7 +45,7 @@ namespace OrderAppWebApi.Controllers
         // PUT: api/Customers/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut("{id}")]
+        [HttpPut("{id}")]//Update/Change
         public async Task<IActionResult> PutCustomer(int id, Customer customer)
         {
             if (id != customer.Id)
@@ -59,7 +59,7 @@ namespace OrderAppWebApi.Controllers
             {
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
+            catch (DbUpdateConcurrencyException) 
             {
                 if (!CustomerExists(id))
                 {
@@ -73,8 +73,8 @@ namespace OrderAppWebApi.Controllers
 
             return NoContent();
         }
-
-        // POST: api/Customers
+    
+        // POST: api/Customers ADD/CREATE
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
@@ -87,7 +87,7 @@ namespace OrderAppWebApi.Controllers
         }
 
         // DELETE: api/Customers/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}")]//Delete /Remove
         public async Task<ActionResult<Customer>> DeleteCustomer(int id)
         {
             var customer = await _context.Customer.FindAsync(id);
@@ -102,7 +102,7 @@ namespace OrderAppWebApi.Controllers
             return customer;
         }
 
-        private bool CustomerExists(int id)
+        private bool CustomerExists(int id)//cant be called outside; only methods can call it
         {
             return _context.Customer.Any(e => e.Id == id);
         }
