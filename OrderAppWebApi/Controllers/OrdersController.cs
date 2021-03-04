@@ -25,14 +25,18 @@ namespace OrderAppWebApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
         {
-            return await _context.Orders.ToListAsync();
+            return await _context.Orders
+                            .Include(c => c.Customer)//Do these to fill FK (only works on read operation)
+                            .ToListAsync();
         }
 
         // GET: api/Orders/5
-        [HttpGet("{id}")]
+        [HttpGet("{id}")] //Get by PK
         public async Task<ActionResult<Order>> GetOrder(int id)
         {
-            var order = await _context.Orders.FindAsync(id);
+            var order = await _context.Orders
+                        .Include(c => c.Customer) //Do these to fill FK ( only works on read operations)
+                        .SingleOrDefaultAsync(o => o.Id == id);
 
             if (order == null)
             {
