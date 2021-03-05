@@ -7,6 +7,8 @@
   <ItemGroup>
     <Compile Remove="Migrations\20210305004158_added item class.cs" />
     <Compile Remove="Migrations\20210305004158_added item class.Designer.cs" />
+    <Compile Remove="Migrations\20210305012121_items controller.cs" />
+    <Compile Remove="Migrations\20210305012121_items controller.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

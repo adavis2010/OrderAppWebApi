@@ -22,5 +22,7 @@ namespace OrderAppWebApi.Data {
 
             });
     }
+
+        public DbSet<OrderAppWebApi.Models.Orderline> Orderline { get; set; }
     }
 }
