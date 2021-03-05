@@ -32,6 +32,35 @@ namespace OrderAppWebApi.Controllers {
         }
 
 
+
+        //PUT: api/orders/proposed/5 = id number of order PROPOSE
+        [HttpPut("proposed/{id}")] //Add method on status
+        public async Task<IActionResult> SetOrderStatusToProposed(int id) {
+            //whatever gets passed in on url gets passed in on this method
+            var order = await _context.Orders.FindAsync(id);
+            if (order == null) {
+                return NotFound();
+            }
+            order.Status = (order.Total <= 100) ? "FINAL" : "PROPOSED"; // used ternary operator
+            return await PutOrder(order.Id, order); // Set property to string Edit
+            
+
+        }
+        //PUT: api/orders//5 = id number of order FINAL
+        [HttpPut("final/{id}")] //Add method on status
+        public async Task<IActionResult> SetOrderStatusToFinal(int id) {
+            //whatever gets passed in on url gets passed in on this method
+            var order = await _context.Orders.FindAsync(id);
+            if (order == null) {
+                return NotFound();
+            }
+            
+            return await PutOrder(order.Id, order);
+        }
+
+
+
+
         // GET: api/Orders
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Order>>> GetOrders() {
