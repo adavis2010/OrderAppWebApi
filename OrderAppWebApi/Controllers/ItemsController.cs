@@ -25,14 +25,17 @@ namespace OrderAppWebApi.Controllers
         [HttpGet]//Get All must add data to url:.../api/items
         public async Task<ActionResult<IEnumerable<Item>>> GetItems()
         {
-            return await _context.Items.ToListAsync();
+            return await _context.Items.
+                            ToListAsync();
         }
 
         // GET: api/Items/5
         [HttpGet("{id}")]// Get by PK
         public async Task<ActionResult<Item>> GetItem(int id)
         {
-            var item = await _context.Items.FindAsync(id);
+            var item = await _context.Items
+                //.Include(c => c.Customer)
+                .SingleOrDefaultAsync(o => o.Id == id);
 
             if (item == null)
             {

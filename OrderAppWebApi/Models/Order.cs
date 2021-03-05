@@ -23,6 +23,8 @@ namespace OrderAppWebApi.Models {
 
         public virtual Customer Customer { get; set; }
 
+        public virtual IEnumerable<Orderline> Orderlines { get; set; } //will hold line items when we retrieve a single order
+
         //Default constrructor
         public Order() { }
     }
