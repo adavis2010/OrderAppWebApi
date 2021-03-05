@@ -6,14 +6,15 @@ using System.Text;
 
 namespace OrderAppWebApi.Models {
     public class Item {
+
+        [StringLength(30), Required]//Attribute
+        public int Id { get; set; }
         
 
-        public int Id { get; set; }
-        [StringLength(30), Required] //Attribute
-
+        
         public string Name { get; set; }
-        [Column(TypeName = "decimal (9,2)")] //Attribute
-       
+
+        [Column(TypeName = "decimal (9,2)")]//Attribute
         public decimal Price { get; set; }
 
 

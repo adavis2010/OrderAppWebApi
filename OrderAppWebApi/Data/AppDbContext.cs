@@ -15,6 +15,8 @@ namespace OrderAppWebApi.Data {
         public DbSet<Customer> Customer { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<Item> Items { get; set; }
+        public DbSet<Orderline> Orderlines { get; set; }
+        public DbSet<Salesperson> Salespersons { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder) {
             builder.Entity<Customer>(e => {     //makes value unique
@@ -24,5 +26,7 @@ namespace OrderAppWebApi.Data {
     }
 
         public DbSet<OrderAppWebApi.Models.Orderline> Orderline { get; set; }
+
+        public DbSet<OrderAppWebApi.Models.Salesperson> Salesperson { get; set; }
     }
 }

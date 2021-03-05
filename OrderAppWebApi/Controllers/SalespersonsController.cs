@@ -12,51 +12,48 @@ namespace OrderAppWebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ItemsController : ControllerBase
+    public class SalespersonsController : ControllerBase
     {
-        private readonly AppDbContext _context; //DB Context Instance
+        private readonly AppDbContext _context;
 
-        public ItemsController(AppDbContext context)//instance with one parameter
+        public SalespersonsController(AppDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/Items
-        [HttpGet]//Get All must add data to url:.../api/items
-        public async Task<ActionResult<IEnumerable<Item>>> GetItems()
+        // GET: api/Salespersons
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Salesperson>>> GetSalespersons()
         {
-            return await _context.Items.
-                            ToListAsync();
+            return await _context.Salespersons.ToListAsync();
         }
 
-        // GET: api/Items/5
-        [HttpGet("{id}")]// Get by PK
-        public async Task<ActionResult<Item>> GetItem(int id)
+        // GET: api/Salespersons/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Salesperson>> GetSalesperson(int id)
         {
-            var item = await _context.Items.FindAsync(id);
-                
-                
+            var salesperson = await _context.Salespersons.FindAsync(id);
 
-            if (item == null)
+            if (salesperson == null)
             {
                 return NotFound();
             }
 
-            return item;
+            return salesperson;
         }
-        //Update/ Change
-        // PUT: api/Items/5  
+
+        // PUT: api/Salespersons/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutItem(int id, Item item)
+        public async Task<IActionResult> PutSalesperson(int id, Salesperson salesperson)
         {
-            if (id != item.Id)
+            if (id != salesperson.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(item).State = EntityState.Modified;
+            _context.Entry(salesperson).State = EntityState.Modified;
 
             try
             {
@@ -64,7 +61,7 @@ namespace OrderAppWebApi.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ItemExists(id))
+                if (!SalespersonExists(id))
                 {
                     return NotFound();
                 }
@@ -76,38 +73,38 @@ namespace OrderAppWebApi.Controllers
 
             return NoContent();
         }
-        // Add/ Create
-        // POST: api/Items 
+
+        // POST: api/Salespersons
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Item>> PostItem(Item item)
+        public async Task<ActionResult<Salesperson>> PostSalesperson(Salesperson salesperson)
         {
-            _context.Items.Add(item);
+            _context.Salespersons.Add(salesperson);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetItem", new { id = item.Id }, item);
+            return CreatedAtAction("GetSalesperson", new { id = salesperson.Id }, salesperson);
         }
 
-        // DELETE: api/Items/5
+        // DELETE: api/Salespersons/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Item>> DeleteItem(int id)
+        public async Task<ActionResult<Salesperson>> DeleteSalesperson(int id)
         {
-            var item = await _context.Items.FindAsync(id);
-            if (item == null)
+            var salesperson = await _context.Salespersons.FindAsync(id);
+            if (salesperson == null)
             {
                 return NotFound();
             }
 
-            _context.Items.Remove(item);
+            _context.Salespersons.Remove(salesperson);
             await _context.SaveChangesAsync();
 
-            return item;
+            return salesperson;
         }
 
-        private bool ItemExists(int id)
+        private bool SalespersonExists(int id)
         {
-            return _context.Items.Any(e => e.Id == id);
+            return _context.Salespersons.Any(e => e.Id == id);
         }
     }
 }

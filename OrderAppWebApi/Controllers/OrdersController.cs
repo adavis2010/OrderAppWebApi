@@ -8,23 +8,33 @@ using Microsoft.EntityFrameworkCore;
 using OrderAppWebApi.Data;
 using OrderAppWebApi.Models;
 
-namespace OrderAppWebApi.Controllers
-{
+namespace OrderAppWebApi.Controllers {
     [Route("api/[controller]")]
     [ApiController]
-    public class OrdersController : ControllerBase
-    {
+    public class OrdersController : ControllerBase {
         private readonly AppDbContext _context;
 
-        public OrdersController(AppDbContext context)
-        {
+        public OrdersController(AppDbContext context) {
             _context = context;
         }
 
+
+        // PUT: api/Orders/Edit/5 = id number of order
+        [HttpPut("edit/{id}")] //Add method on status
+        public async Task<IActionResult> SetOrderStatusToEdit(int id) {
+            //whatever gets passed in on url gets passed in on this method
+            var order = await _context.Orders.FindAsync(id);
+            if (order == null) {
+                return NotFound();
+            }
+            order.Status = "EDIT"; // Set property to string Edit
+            return await PutOrder(order.Id, order);
+        }
+
+
         // GET: api/Orders
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Order>>> GetOrders()
-        {
+        public async Task<ActionResult<IEnumerable<Order>>> GetOrders() {
             return await _context.Orders
                             .Include(c => c.Customer)//Do these to fill FK (only works on read operation)
                             .ToListAsync();
@@ -32,14 +42,15 @@ namespace OrderAppWebApi.Controllers
 
         // GET: api/Orders/5
         [HttpGet("{id}")] //Get by PK
-        public async Task<ActionResult<Order>> GetOrder(int id)
-        {
+        public async Task<ActionResult<Order>> GetOrder(int id) {
             var order = await _context.Orders
                         .Include(c => c.Customer) //Do these to fill FK ( only works on read operations)
+                        .Include(l => l.Orderlines)// include = talks about collection I am working with
+                        .ThenInclude(i => i.Item) // Then includes item instance in orderlines
+                        .Include(s => s.Salesperson)
                         .SingleOrDefaultAsync(o => o.Id == id);
 
-            if (order == null)
-            {
+            if (order == null) {
                 return NotFound();
             }
 
@@ -50,27 +61,19 @@ namespace OrderAppWebApi.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutOrder(int id, Order order)
-        {
-            if (id != order.Id)
-            {
+        public async Task<IActionResult> PutOrder(int id, Order order) {
+            if (id != order.Id) {
                 return BadRequest();
             }
 
             _context.Entry(order).State = EntityState.Modified;
 
-            try
-            {
+            try {
                 await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!OrderExists(id))
-                {
+            } catch (DbUpdateConcurrencyException) {
+                if (!OrderExists(id)) {
                     return NotFound();
-                }
-                else
-                {
+                } else {
                     throw;
                 }
             }
@@ -82,8 +85,7 @@ namespace OrderAppWebApi.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<Order>> PostOrder(Order order)
-        {
+        public async Task<ActionResult<Order>> PostOrder(Order order) {
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
 
@@ -92,11 +94,9 @@ namespace OrderAppWebApi.Controllers
 
         // DELETE: api/Orders/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<Order>> DeleteOrder(int id)
-        {
+        public async Task<ActionResult<Order>> DeleteOrder(int id) {
             var order = await _context.Orders.FindAsync(id);
-            if (order == null)
-            {
+            if (order == null) {
                 return NotFound();
             }
 
@@ -106,8 +106,7 @@ namespace OrderAppWebApi.Controllers
             return order;
         }
 
-        private bool OrderExists(int id)
-        {
+        private bool OrderExists(int id) {
             return _context.Orders.Any(e => e.Id == id);
         }
     }

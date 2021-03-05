@@ -24,12 +24,11 @@ namespace OrderAppWebApi.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
+                        .HasMaxLength(10)
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Code")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(10)")
-                        .HasMaxLength(10);
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime?>("Created")
                         .HasColumnType("datetime2");
@@ -48,7 +47,8 @@ namespace OrderAppWebApi.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("Code")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[Code] IS NOT NULL");
 
                     b.ToTable("Customer");
                 });
@@ -58,12 +58,11 @@ namespace OrderAppWebApi.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
+                        .HasMaxLength(30)
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(30)")
-                        .HasMaxLength(30);
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal (9,2)");
@@ -88,6 +87,9 @@ namespace OrderAppWebApi.Migrations
                         .HasColumnType("nvarchar(200)")
                         .HasMaxLength(200);
 
+                    b.Property<int?>("SalespersonId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasColumnType("nvarchar(12)")
@@ -99,6 +101,8 @@ namespace OrderAppWebApi.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
+
+                    b.HasIndex("SalespersonId");
 
                     b.ToTable("Orders");
                 });
@@ -128,6 +132,32 @@ namespace OrderAppWebApi.Migrations
                     b.ToTable("Orderline");
                 });
 
+            modelBuilder.Entity("OrderAppWebApi.Models.Salesperson", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasMaxLength(10)
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(30)")
+                        .HasMaxLength(30);
+
+                    b.Property<decimal>("Sales")
+                        .HasColumnType("decimal (9,2)");
+
+                    b.Property<string>("Statecode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(2)")
+                        .HasMaxLength(2);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Salesperson");
+                });
+
             modelBuilder.Entity("OrderAppWebApi.Models.Order", b =>
                 {
                     b.HasOne("OrderAppWebApi.Models.Customer", "Customer")
@@ -135,6 +165,10 @@ namespace OrderAppWebApi.Migrations
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("OrderAppWebApi.Models.Salesperson", "Salesperson")
+                        .WithMany()
+                        .HasForeignKey("SalespersonId");
                 });
 
             modelBuilder.Entity("OrderAppWebApi.Models.Orderline", b =>
@@ -146,7 +180,7 @@ namespace OrderAppWebApi.Migrations
                         .IsRequired();
 
                     b.HasOne("OrderAppWebApi.Models.Order", "Order")
-                        .WithMany()
+                        .WithMany("Orderlines")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

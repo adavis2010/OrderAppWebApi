@@ -20,12 +20,14 @@ namespace OrderAppWebApi.Models {
         public decimal Total { get; set; }
 
         public int CustomerId { get; set; }//Foreign Key
-
         public virtual Customer Customer { get; set; }
 
         public virtual IEnumerable<Orderline> Orderlines { get; set; } //will hold line items when we retrieve a single order
 
-        //Default constrructor
+        public int? SalespersonId { get; set; }
+        public virtual Salesperson Salesperson { get; set; }
+
+        //Default constructor
         public Order() { }
     }
 }

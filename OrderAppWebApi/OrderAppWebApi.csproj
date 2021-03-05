@@ -5,13 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Migrations\20210305004158_added item class.cs" />
-    <Compile Remove="Migrations\20210305004158_added item class.Designer.cs" />
-    <Compile Remove="Migrations\20210305012121_items controller.cs" />
-    <Compile Remove="Migrations\20210305012121_items controller.Designer.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.12" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.12">
       <PrivateAssets>all</PrivateAssets>
