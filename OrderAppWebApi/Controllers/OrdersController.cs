@@ -19,6 +19,28 @@ namespace OrderAppWebApi.Controllers {
         }
 
 
+        // GET: api/Orders(GET ALL ORDERS)
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Order>>> GetOrders() {
+            return await _context.Orders
+                            .Include(c => c.Customer)//Do these to fill FK (only works on read operation)
+                            .ToListAsync();
+        }
+
+
+
+        // GET: api/Orders (RETURN ALL ORDERS IN PROPOSED STATUS)
+        [HttpGet("proposed")]
+        public async Task<ActionResult<IEnumerable<Order>>> GetOrdersInProposedStatus() {
+            return await _context.Orders
+                            .Include(c => c.Customer)//Do these to fill FK (only works on read operation)
+                            .Where(o => o.Status == "PROPOSED")
+                            .ToListAsync();   
+
+           
+
+        }
+
         // PUT: api/Orders/Edit/5 = id number of order
         [HttpPut("edit/{id}")] //Add method on status
         public async Task<IActionResult> SetOrderStatusToEdit(int id) {
@@ -30,7 +52,6 @@ namespace OrderAppWebApi.Controllers {
             order.Status = "EDIT"; // Set property to string Edit
             return await PutOrder(order.Id, order);
         }
-
 
 
         //PUT: api/orders/proposed/5 = id number of order PROPOSE
@@ -58,16 +79,6 @@ namespace OrderAppWebApi.Controllers {
             return await PutOrder(order.Id, order);
         }
 
-
-
-
-        // GET: api/Orders
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Order>>> GetOrders() {
-            return await _context.Orders
-                            .Include(c => c.Customer)//Do these to fill FK (only works on read operation)
-                            .ToListAsync();
-        }
 
         // GET: api/Orders/5
         [HttpGet("{id}")] //Get by PK
